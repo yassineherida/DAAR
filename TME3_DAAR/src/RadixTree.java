@@ -59,7 +59,9 @@ public class RadixTree {
 		public Node() {
 			this.location = null;
 			this.edges = new Edge[alphabet_size];
-			Arrays.fill(edges, new Edge("", this, null));
+			for(int i = 0; i < alphabet_size; i++) {
+				edges[i] = new Edge("", this, null);
+			}
 		}
 		
 		public void setLocation(ArrayList<Coordinates> l) {
@@ -67,6 +69,10 @@ public class RadixTree {
 				System.out.println("Warning: inserting a word already in the tree");;
 			}
 			location = l;
+		}
+		
+		public ArrayList<Coordinates> getLocation(){
+			return location;
 		}
 		
 		public Edge getEdge(String s) {
@@ -95,33 +101,59 @@ public class RadixTree {
 		
 	}
 	
-	public void insertWordUtil(Node n, String w, ArrayList<Coordinates> c) {
+	public Node insertWordUtil(Node n, String w, Node to_insert) {
 		if (w.isEmpty()) {
-			n.setLocation(c);
+			return to_insert;
 		}
 		else {
 			// in depth insertion
 			Edge dir = n.getEdge(w);
 			String t = dir.getTag();
+			
+			//i is the length of the greatest common prefix
 			int i = 0;
-			while (i < t.length() && w.charAt(i) == t.charAt(i)) {
+			int min_len = Math.min(t.length(), w.length());
+			while (i < min_len && w.charAt(i) == t.charAt(i)) {
 				i++;
 			}
-			if(dir.getDest() == null) {
-				dir.setDest(new Node());
-				//insertWordUtil(dir.getDest(), t, );
+			// no tag on edge thus no word yet
+			if(i == 0) {
+				dir.setTag(w);
+				Node res = insertWordUtil(dir.getDest(), "", to_insert);
+				dir.setDest(res);
+				return res;
 			}
-			dir.setTag(t.substring(0, i));
 			
-			String suffix = t.substring(i);
-			new Edge(suffix, orig, dest)
-			//insertWordUtil(dir.getDest(), )
+			String suffix_tag = t.substring(i);
+			String suffix_w = w.substring(i);
+			if (suffix_tag.isEmpty()) {
+				return insertWordUtil(dir.getDest(), suffix_w, to_insert);
+			}
+			
+			// cutting previous prefix
+			Node to_move = dir.getDest();
+			Node new_node;
+			
+			if (suffix_w.isEmpty()) {
+				new_node = to_insert;
+			}
+			else {
+				new_node= new Node();
+			}
+			
+			dir.setDest(new_node);
+			dir.setTag(t.substring(0, i));
+			insertWordUtil(new_node, suffix_tag, to_move);
+			return insertWordUtil(new_node, suffix_w, to_insert);
 		}
 	}
-	
-	public void insertWord (String w, ArrayList<Coordinates> c) {
-		insertWordUtil(root, w, c);
-	}
 
+	public void insertWord (String w, ArrayList<Coordinates> c) {
+		Node n = new Node();
+		n.setLocation(c);
+		Node res = insertWordUtil(root, w, n);
+		return;
+	}
+	
 	
 }

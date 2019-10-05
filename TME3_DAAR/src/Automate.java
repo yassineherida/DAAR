@@ -446,7 +446,10 @@ public class Automate {
 	      char[] txt = new String("memamamamia").toCharArray();
 	 		System.out.println(Automate.match(facteur, t, txt));*/
 		 try {
-			indexing("src/test2.txt");
+			Indexing.indexing("src/test2.txt");
+			RadixTree rd = new RadixTree();
+			rd.insertWord("bonjour", new ArrayList<Coordinates>());
+			rd.insertWord("bon", new ArrayList<Coordinates>());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
