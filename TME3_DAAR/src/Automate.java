@@ -2,9 +2,12 @@ import java.awt.List;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -413,47 +416,4 @@ public class Automate {
 		 }
 	 }
 	 
-
-	 
-
-	 
-	 
-	 
-	 
-	 public static void main(String arg[]) {
-		 //RegExTree a = new RegExTree((int)'a', new ArrayList<RegExTree>());
-		 //RegExTree b = new RegExTree((int)'b', new ArrayList<RegExTree>());
-		 //ArrayList<RegExTree> te= new ArrayList<>();
-		 //te.add(a);
-		 //te.add(b);
-		 //RegExTree t = exampleAhoUllman();
-		 //RegExTree t= new RegExTree(CONCAT, te);
-		 //Automate test =new Automate(t);
-		 //test.test(t);
-		 //System.out.println(test.automate[0][97]);
-		 //test.determ(test.start);
-		 //System.out.println(test.deter);
-		 //System.out.println(test.etat);
-		 //System.out.println(test.etatF);
-		 //System.out.println(test.parcours("bcaa aa b aaa ab"));
-		 
-		 /*
-		 int[] t = Automate.retenue("mamamamia");
-		 for (int e : t)
-			 System.out.println(e);
-
-	      char[] facteur = new String("mamamamia").toCharArray();
-	      char[] txt = new String("memamamamia").toCharArray();
-	 		System.out.println(Automate.match(facteur, t, txt));*/
-		 try {
-			Indexing.indexing("src/test2.txt");
-			RadixTree rd = new RadixTree();
-			rd.insertWord("bonjour", new ArrayList<Coordinates>());
-			rd.insertWord("bon", new ArrayList<Coordinates>());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	 
-	 }
 }

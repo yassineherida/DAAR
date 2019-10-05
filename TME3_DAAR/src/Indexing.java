@@ -11,11 +11,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class Indexing {
 
 	
-	 public static void indexing (String fileName) throws IOException {
+	 public static Set<Entry<String, ArrayList<Coordinates>>> indexing (String fileName) throws IOException {
 	        InputStream flux=new FileInputStream(fileName); 
 	        InputStreamReader lecture=new InputStreamReader(flux);
 	        BufferedReader buff=new BufferedReader(lecture);
@@ -58,10 +59,7 @@ public class Indexing {
 	        	    ));
 	        sorted.remove("");
 	       
-	        for(Entry<String, ArrayList<Coordinates>> e:sorted.entrySet()) {
-	    
-	        	//System.out.println(e.getKey() + " " + e.getValue());
-	        }
+	        return sorted.entrySet();
 	        
 	 }
 	 

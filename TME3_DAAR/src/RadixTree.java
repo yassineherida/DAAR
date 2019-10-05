@@ -1,12 +1,26 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class RadixTree {
+public class RadixTree implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8797546353613135978L;
 	static int alphabet_size = 28;
 	private Node root;
 	
-	class Edge {
+	class Edge implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 2569119177374717148L;
 		private String tag;
 		private Node orig;
 		private Node dest;
@@ -50,9 +64,20 @@ public class RadixTree {
 			return s.substring(i);
 		}
 		
+		public String toString() {
+			if(dest == null) {
+				return tag;
+			}
+			return tag + " " + dest;
+		}
+		
 	}
 	
-	class Node {
+	class Node implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7469752664608457546L;
 		private ArrayList<Coordinates> location;
 		private Edge[] edges;
 		
@@ -92,6 +117,17 @@ public class RadixTree {
 				}
 			}
 			return edges[pos_edge];
+		}
+		
+		public String toString(){
+			StringBuilder sb = new StringBuilder();
+			sb.append('(');
+			for (Edge edge: edges) {
+				sb.append(edge.toString());
+				sb.append(',');
+			}
+			sb.append(')');
+			return sb.toString();
 		}
 
 	}
@@ -153,6 +189,28 @@ public class RadixTree {
 		n.setLocation(c);
 		Node res = insertWordUtil(root, w, n);
 		return;
+	}
+	
+	public String toString() {
+		return root.toString();
+	}
+	
+	public void saveRadixTree(String filename) throws IOException {
+		FileOutputStream fileOut = new FileOutputStream(filename);
+		ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        out.writeObject(this);
+        out.close();
+        fileOut.close();
+        System.out.println("Serialized data is saved in " + filename);
+	}
+	
+	public static RadixTree readRadixTree(String filename) throws IOException, ClassNotFoundException {
+        FileInputStream fileIn = new FileInputStream(filename);
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+        RadixTree rd = (RadixTree) in.readObject();
+        in.close();
+        fileIn.close();
+        return rd;
 	}
 	
 	
