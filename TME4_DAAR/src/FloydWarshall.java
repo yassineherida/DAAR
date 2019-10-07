@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -42,12 +43,12 @@ public class FloydWarshall {
 		return result;
 	}
 	
-	public ArrayList<Object> floydWarshallv2(Set<Integer>[] edge, int edgeThreshold) {
+	public ArrayList<Object> floydWarshallv2(ArrayList<Set<Integer>> edge, int edgeThreshold) {
 		
-		int n = edge.length;
+		int n = edge.size();
 		double[][] M = new double[n][n];
 		
-		ArrayList<ArrayList<ArrayList<Integer>>> R = new ArrayList<>();
+		ArrayList<ArrayList<Set<Integer>>> R = new ArrayList<>();
 		
 		int[][] nb_ppc = new int[n][n];
 		for (int i = 0; i < n; i++) {
@@ -58,14 +59,16 @@ public class FloydWarshall {
 				else 
 					M[i][j]= Double.POSITIVE_INFINITY;
 				
-				R.get(i).add(new ArrayList<>());
+				R.get(i).add(new HashSet<>());
 				nb_ppc[i][j] = 0;
 				// System.out.println("R[i][j] vaut " + R[i][j]);
 			}
 		}
-		for (int i=0;i<edge.length;i++) {
-			for (Integer e:edge[i]) {
+		for (int i=0;i<edge.size();i++) {
+			R.get(i).get(i).add(i);
+			for (Integer e:edge.get(i)) {
 				M[i][e]=1;
+				R.get(i).get(e).add(e);
 			}
 		}
 		
@@ -74,7 +77,8 @@ public class FloydWarshall {
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
 					
-					ArrayList<Integer> rclone = (ArrayList<Integer>) R.get(i).get(j).clone();
+					if((i==p || j==p) || i==j) continue;
+
 						if (M[i][p] + M[p][j] < M[i][j]) {
 							nb_ppc[i][j] = 1;
 							M[i][j] = M[i][p] + M[p][j];
@@ -82,6 +86,7 @@ public class FloydWarshall {
 							R.get(i).get(j).add(p);
 						}
 						if (M[i][p] + M[p][j] == M[i][j]) {
+							System.out.println("i: " + i + " j: " + j + " p: " + p);
 							nb_ppc[i][j]++;
 							R.get(i).get(j).add(p);
 						}
@@ -110,16 +115,40 @@ public class FloydWarshall {
 		
 	}
 	
+	public void addEdge (ArrayList<Set<Integer>> g, int i, int j) {
+		g.get(i).add(j);
+		g.get(j).add(i);
+	}
+	
 	public static void main (String[] args) {
 		FloydWarshall f = new FloydWarshall();
 		
 		int[][] dist = {{0, 1, 10, 1}, {1, 0, 10, 10}, {1, 10, 0, 1}, {1, 10, 1, 0}};
 		ArrayList<Object> l  = f.floydWarshall(dist, 2);
 		
-		ArrayList<Object> l2  = f.floydWarshallv2(dist, 2);
-		ArrayList<ArrayList<ArrayList<Integer>>> R2 = (ArrayList<ArrayList<ArrayList<Integer>>>) l2.get(1);
-		for(ArrayList<ArrayList<Integer>> t: R2) {
-			for(ArrayList<Integer> e: t) {
+		ArrayList<Set<Integer>> g = new ArrayList<>();
+		g.add(new HashSet<>());
+		g.add(new HashSet<>());
+		g.add(new HashSet<>());
+		g.add(new HashSet<>());
+		g.add(new HashSet<>());
+		g.add(new HashSet<>());
+		
+		f.addEdge(g, 0, 1);
+		f.addEdge(g, 0, 2);
+		f.addEdge(g, 1, 2);
+		f.addEdge(g, 1, 3);
+		f.addEdge(g, 3, 4);
+		f.addEdge(g, 2, 4);
+		f.addEdge(g, 3, 5);
+		f.addEdge(g, 4, 5);
+		f.addEdge(g, 1, 4);
+		f.addEdge(g, 2, 3);
+		
+		ArrayList<Object> l2  = f.floydWarshallv2(g, 2);
+		ArrayList<ArrayList<HashSet<Integer>>> R2 = (ArrayList<ArrayList<HashSet<Integer>>>) l2.get(1);
+		for(ArrayList<HashSet<Integer>> t: R2) {
+			for(HashSet<Integer> e: t) {
 				System.out.print(e + " ");
 			}
 			System.out.println();
