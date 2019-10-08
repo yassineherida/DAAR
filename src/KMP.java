@@ -25,7 +25,6 @@ public class KMP {
 			 while (i <= courant-i+1) {
 				 if(r.substring(0,i).equals(r.substring(courant-i,courant))) {
 					 value=i;
-					 
 				 }
 				 i++;
 				 

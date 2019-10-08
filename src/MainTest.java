@@ -68,7 +68,7 @@ public class MainTest {
 
 	 		System.out.println(Automate.match(facteur, t, txt));*/
 		 try {
-			 String filename = "test2.txt";
+			 String filename = "test1.txt";
 			Set<Entry<String, ArrayList<Coordinates>>> words = Indexing.indexing(filename);
 			RadixTree rd = new RadixTree();
 			String filename2 = "rd.ser";
@@ -76,7 +76,7 @@ public class MainTest {
 				rd.insertWord(w.getKey(), w.getValue());
 			}
 			System.out.println(rd);
-			ArrayList<Coordinates> l_s = rd.searchWord("hand");
+			ArrayList<Coordinates> l_s = rd.searchWord("and");
 			//System.out.println(rd);
 			rd.saveRadixTree(filename2);
 			RadixTree rd2 = RadixTree.readRadixTree(filename2);
@@ -87,10 +87,10 @@ public class MainTest {
 			for(Coordinates c: l_s) {
 				System.out.println(lignes.get(c.getX()-1));
 			}
-			ArrayList<Coordinates> locs = KMP.kmp(lignes, "hand");
+			ArrayList<Coordinates> locs = KMP.kmp(lignes, "and");
 			System.out.println(locs);
-			printMatch("hand", lignes, locs );
-			//printMatch("hand", lignes, l_s);
+			//printMatch("and", lignes, locs );
+			printMatch("and", lignes, l_s);
 	                 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
