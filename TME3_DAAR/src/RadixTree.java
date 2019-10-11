@@ -64,6 +64,15 @@ public class RadixTree implements Serializable{
 			return s.substring(i);
 		}
 		
+		public int sizeOfPrefix (String s) {
+			
+			int i = 0;
+			while (i < tag.length() && s.charAt(i) == tag.charAt(i)) {
+				i++;
+			}
+			return i;
+		}
+		
 		public String toString() {
 			if(dest == null) {
 				return tag;
@@ -82,7 +91,7 @@ public class RadixTree implements Serializable{
 		private Edge[] edges;
 		
 		public Node() {
-			this.location = null;
+			this.location = new ArrayList<>();
 			this.edges = new Edge[alphabet_size];
 			for(int i = 0; i < alphabet_size; i++) {
 				edges[i] = new Edge("", this, null);
@@ -90,9 +99,6 @@ public class RadixTree implements Serializable{
 		}
 		
 		public void setLocation(ArrayList<Coordinates> l) {
-			if(location != null) {
-				System.out.println("Warning: inserting a word already in the tree");;
-			}
 			location = l;
 		}
 		
@@ -183,7 +189,41 @@ public class RadixTree implements Serializable{
 			return insertWordUtil(new_node, suffix_w, to_insert);
 		}
 	}
-
+	
+	
+	public ArrayList<Coordinates> allLocations(Node n){
+		ArrayList<Coordinates> res = n.getLocation();
+		for(Edge e:n.edges) {
+			if(e.getDest() != null) {
+				res.addAll(allLocations(e.getDest()));
+			}
+		}
+		return res;
+	}
+	
+	public ArrayList<Coordinates> searchWordUtil(String w, Node n){
+		if (w.isEmpty()) {
+			return allLocations(n);
+		}
+		if(n==null) {
+			return new ArrayList<>();
+		}
+		Edge e = n.getEdge(w);
+		int s_p = e.sizeOfPrefix(w);
+		if(s_p == e.getTag().length()) {
+			return searchWordUtil(w.substring(e.getTag().length()), e.getDest());
+		}
+		
+		if(s_p <= e.getTag().length() && w.substring(s_p).isEmpty()) {
+			return allLocations(e.getDest());
+		}
+		return new ArrayList<>();
+	}
+	
+	public ArrayList<Coordinates> searchWord(String w){
+		return searchWordUtil(w, root);
+	}
+	
 	public void insertWord (String w, ArrayList<Coordinates> c) {
 		Node n = new Node();
 		n.setLocation(c);
