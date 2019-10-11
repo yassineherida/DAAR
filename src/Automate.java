@@ -1,31 +1,10 @@
-import java.awt.List;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.regex.Pattern;
-import static java.util.Comparator.comparingInt;
-import static java.util.stream.Collectors.toMap;
-
-import javax.swing.plaf.synth.SynthSplitPaneUI;
-
-
 
 public class Automate {
 
@@ -267,9 +246,9 @@ public class Automate {
 					if(deter.get(courant).get(j)==null) {
 						deter.get(courant).put(j, (Set<Integer>) new HashSet<Integer>());
 					} 
-					System.out.println("ici");
+					//System.out.println("ici");
 					 deter.get(courant).get(j).add(automate[i][j]);
-					 System.out.println(  deter.get(courant).get(j)  );
+					 //System.out.println(  deter.get(courant).get(j)  );
 					 deter.get(courant).get(j).addAll( addEpsilon(deter.get(courant).get(j),0) );
 					 if ( !(etat.containsValue(deter.get(courant).get(j)))) {
 						 etat.put(nbetat, deter.get(courant).get(j));
@@ -323,11 +302,66 @@ public class Automate {
 		  }
 		
 	 ArrayList<String> parcours(String r) {
+		 //System.out.println("Start");
+		 ArrayList<String> res=new ArrayList<>();
+		 char[]liste =r.toCharArray();
+		 String courant="";
+		 int etat_courant=deterstart;
+		 int e=0;
+		 for (int i:liste) {
+			 if(deter.get(etat_courant).containsKey(i)|| deter.get(etat_courant).containsKey(43)) {
+				 //System.out.println(i);
+				 //System.out.println(liste[e]);
+				 //System.out.println("yes");
+				 if(deter.get(etat_courant).containsKey(43))
+					 etat_courant= numEtat(deter.get(etat_courant).get(43));
+				 else
+					 etat_courant= numEtat(deter.get(etat_courant).get(i));
+					//System.out.println(etat_courant);
+					courant=courant+(char)i;
+					if(etatF.get(etat_courant)[1]==1)
+						res.add(courant);
+				 for(int j=e+1;j<liste.length;j++) {
+					 /*System.out.println("in");
+					 System.out.println(liste[j]);
+					 System.out.println( deter.get(etat_courant).get((int)liste[j]));
+					 System.out.println("out");*/
+					 if( deter.get(etat_courant).get((int)liste[j])==null && !deter.get(etat_courant).containsKey(43)) {
+					// System.out.println(liste[j]);
+						 courant="";
+						 etat_courant=deterstart;
+						 break;
+					
+					 }else {
+						 //System.out.println("no");
+						 if(deter.get(etat_courant).containsKey(43))
+							 etat_courant= numEtat(deter.get(etat_courant).get(43));
+						 else
+							 etat_courant= numEtat(deter.get(etat_courant).get((int)liste[j]));
+						//System.out.println(etat_courant);
+						courant=courant+liste[j];
+						if(etatF.get(etat_courant)[1]==1)
+							res.add(courant);
+							
+					 }
+						
+				 }
+				 courant="";
+				 etat_courant=deterstart;
+			 }
+			
+
+			 e++;
+		 }
+		 return res;
+	 }
+	 ArrayList<String> parcours2(String r) {
 		 ArrayList<String> res=new ArrayList<>();
 		 char[]liste =r.toCharArray();
 		 String courant="";
 		 int etat_courant=deterstart;
 		 for (int i:liste) {
+			 System.out.println(deter.get(etat_courant).get(i));
 			 if( deter.get(etat_courant).get(i)==null) {
 				 courant="";
 				 etat_courant=deterstart;
@@ -344,6 +378,24 @@ public class Automate {
 		 }
 		 return res;
 	 }
+	 /*
+	 public static void main(String arg[]) {
+		 RegExTree a = new RegExTree((int)'a', new ArrayList<RegExTree>());
+		 RegExTree b = new RegExTree((int)'b', new ArrayList<RegExTree>());
+		 ArrayList<RegExTree> te= new ArrayList<>();
+		 te.add(a);
+		 te.add(b);
+		 //RegExTree t = exampleAhoUllman();
+		 RegExTree t= new RegExTree(CONCAT, te);
+		 Automate test =new Automate(t);
+		 test.test(t);
+		 System.out.println(test.automate[0][97]);
+		 test.determ(test.start);
+		 System.out.println(test.deter);
+		 System.out.println(test.etat);
+		 System.out.println(test.etatF);
+		 System.out.println(test.parcours("bcaa aa b aaa ab"));
 
-	 
+		  }*/
+	
 }
