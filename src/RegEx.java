@@ -19,6 +19,7 @@ public class RegEx {
   static final int PARENTHESEOUVRANT = 0x16641664;
   static final int PARENTHESEFERMANT = 0x51515151;
   static final int DOT = 0xD07;
+  static final int SLASH =  0x6464674; 
   
   //REGEX
   private static String regEx;
@@ -49,20 +50,19 @@ public class RegEx {
       try {
         RegExTree ret = parse();
         System.out.println("  >> Tree result: "+ret.toString()+".");
-       Automate t=new Automate(ret);
+        Automate t=new Automate(ret);
         t.test(ret);
         t.determ(t.start);
-        InputStream flux=new FileInputStream("src/test1.txt"); 
+        InputStream flux=new FileInputStream("src/test3.txt"); 
         InputStreamReader lecture=new InputStreamReader(flux);
         BufferedReader buff=new BufferedReader(lecture);
         String ligne;
         int c=0;
         while ((ligne=buff.readLine())!=null){
-        	ArrayList<String> a =t.parcours(ligne);
+        	ArrayList<String> a =t.parcours2(ligne);
         	if(! a.isEmpty()) {
         		c+=1;
-            	System.out.println(a.size()); 
-            		System.out.println(a);
+        		System.out.println(a);
         	}
         }
        System.out.println("c"+c);
@@ -86,13 +86,25 @@ public class RegEx {
     //END DEBUG
 
     ArrayList<RegExTree> result = new ArrayList<RegExTree>();
-    for (int i=0;i<regEx.length();i++) result.add(new RegExTree(charToRoot(regEx.charAt(i)),new ArrayList<RegExTree>()));
+    for (int i=0;i<regEx.length();i++) {
+    	System.out.println("i est "+i);
+    	if (regEx.charAt(i)=='\\') {
+    		System.out.println("cela fonctionne");
+    		result.add(new RegExTree(regEx.charAt(i+1),new ArrayList<RegExTree>()));
+    		i=i+1;
+    	}else {
+    		result.add(new RegExTree(charToRoot(regEx.charAt(i)),new ArrayList<RegExTree>()));
+    	}
+    			
+    	
+    }
     
     return parse(result);
   }
   private static int charToRoot(char c) {
-    if (c=='.') return CONCAT;
-    //if (c=='+') return DOT;
+    if (c=='.')
+    	{System.out.println("ça marche");
+    	return DOT;}
     if (c=='*') return ETOILE;
     if (c=='|') return ALTERN;
     if (c=='(') return PARENTHESEOUVRANT;
@@ -100,7 +112,6 @@ public class RegEx {
     return (int)c;
   }
   private static RegExTree parse(ArrayList<RegExTree> result) throws Exception {
-	result=processDot(result);
     while (containParenthese(result)) result=processParenthese(result);
     while (containEtoile(result)) result=processEtoile(result);
     while (containConcat(result)) result=processConcat(result);
@@ -113,22 +124,6 @@ public class RegEx {
   private static boolean containParenthese(ArrayList<RegExTree> trees) {
     for (RegExTree t: trees) if (t.root==PARENTHESEFERMANT || t.root==PARENTHESEOUVRANT) return true;
     return false;
-  }
-  private static ArrayList<RegExTree> processDot(ArrayList<RegExTree> trees){
-	  for (RegExTree t: trees) {
-		  System.out.println("ici");
-		  System.out.println(t.root);
-		  if (t.root==12602535) {
-			  System.out.println("la");
-			  t.root='+';
-			  System.out.println((int)'+');
-			  System.out.println("hop");
-		  }
-			  processDot(t.subTrees);
-		  }
-	  
-	return trees;
-	  
   }
   private static ArrayList<RegExTree> processParenthese(ArrayList<RegExTree> trees) throws Exception {
     ArrayList<RegExTree> result = new ArrayList<RegExTree>();
@@ -287,7 +282,7 @@ class RegExTree {
     if (root==RegEx.CONCAT) return ".";
     if (root==RegEx.ETOILE) return "*";
     if (root==RegEx.ALTERN) return "|";
-    if (root==RegEx.DOT) return "+";
+    if (root==RegEx.DOT) return ".";
     return Character.toString((char)root);
   }
 }
