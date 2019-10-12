@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+
+
 public class TestPerf {
 	
 	   private Map<String, RadixTree> database;
@@ -24,6 +26,31 @@ public class TestPerf {
 	    	database = new HashMap<>();
 	    	allFiles = new HashMap<>();
 	    }
+	    
+		public void printMatch(String w, ArrayList<String> txt, ArrayList<Coordinates> match) {
+			String reset = new String("\u001B[0m");
+			String yellow = new String("\u001B[31m");
+			if(match.isEmpty())
+				System.out.println("Found no occurrences of word " + w);
+			for(Coordinates c: match) {
+				int i = c.getX()-1;
+				int j = c.getY()-1;
+				String ligne = txt.get(i);
+				System.out.println(ligne.substring(0,j)+ yellow + ligne.substring(j, j+w.length()) + reset + ligne.substring(j+w.length()));
+			}
+
+		}
+		public static void printMatchAuto(String txt, ArrayList<Coordinates> match) {
+			String reset = new String("\u001B[0m");
+			String yellow = new String("\u001B[31m");
+			
+			for(Coordinates c: match) {
+				int i = c.getX();
+				int j = c.getY();
+				System.out.println(txt.substring(0,i)+ yellow + txt.substring(i, j+1) + reset + txt.substring(j+1));
+			}
+
+		}
 	    
 		
 		public RadixTree buildRadixTree(Path p) throws IOException {
@@ -83,7 +110,7 @@ public class TestPerf {
 		}
 		
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 	    StringBuilder sortie = new StringBuilder();
 		if(args.length < 4 || args.length > 4) {
 			System.out.println("  " + args[0]);
@@ -106,21 +133,21 @@ public class TestPerf {
 	    	long start;
 	    	long finish;
 	    	long timeElapsed;
-	    	start = System.nanoTime();
+	    	start = System.currentTimeMillis();
 		    switch(opt) {
 		    case 0:
 		 // ...
 		    	RegEx.RegEx(pattern, tp.allFiles.get(filename).getAbsolutePath());
 			    break;
 		    case 1:
-		    	KMP.kmp(lignes, pattern);
+		    	tp.printMatch(pattern, lignes, KMP.kmp(lignes, pattern));
 		    	break;
 		    
 		    case 2:
-		    	tp.database.get(filename).searchWord(pattern.toLowerCase());
+		    	tp.printMatch(pattern, lignes, tp.database.get(filename).searchWord(pattern.toLowerCase()));
 		    	break;
 		    }
-		    finish = System.nanoTime();
+		    finish = System.currentTimeMillis();
 		    timeElapsed = finish - start;
 		    
 		    
@@ -128,14 +155,29 @@ public class TestPerf {
 		    Process proc = new ProcessBuilder(arguments).start();
 		    BufferedReader stdInput = new BufferedReader(new 
 		    	     InputStreamReader(proc.getInputStream()));
-
-	    	// Read the output from the command
 		    
 	    	String s = null;
 	    	sortie.append(filename + " ");
 	    	while ((s = stdInput.readLine()) != null) {
 	    	    sortie.append(s.split("\\s")[0] + " ");
 	    	}
+	    	sortie.append(timeElapsed + " ");
+		    
+		    String[] arguments_grep = new String[] {"/bin/egrep", pattern, tp.allFiles.get(filename).getAbsolutePath()};
+
+	    	
+		     ProcessBuilder proc_grepB = new ProcessBuilder(arguments);
+		     start = System.currentTimeMillis();
+		     Process proc_grep = proc_grepB.start();
+		     BufferedReader stdInput_grep = new BufferedReader(new 
+		    InputStreamReader(proc_grep.getInputStream()));
+	    	synchronized(proc_grep) {
+		    proc_grep.wait();
+	    	}		    
+	    	while ((s = stdInput_grep.readLine()) != null) {}
+		    finish = System.currentTimeMillis();
+		    timeElapsed = finish - start;
+
 	    	sortie.append(timeElapsed + "\n");
 
 	    }
