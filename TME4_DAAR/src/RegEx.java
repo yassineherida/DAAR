@@ -59,7 +59,7 @@ public class RegEx {
         String ligne;
         int c=0;
         while ((ligne=buff.readLine())!=null){
-        	ArrayList<Coordinates> a =t.parcours2(ligne);
+        	ArrayList<String> a =t.parcours(ligne);
         	if(! a.isEmpty()) {
         		c+=1;
         		System.out.println(a);
@@ -91,7 +91,7 @@ public class RegEx {
 	        RegExTree ret = parse();
 	        System.out.println("  >> Tree result: "+ret.toString()+".");
 	        Automate t=new Automate(ret);
-	        //t.test(ret);
+	        t.test(ret);
 	        t.determ(t.start);
 	        InputStream flux=new FileInputStream(name); 
 	        InputStreamReader lecture=new InputStreamReader(flux);
@@ -102,7 +102,7 @@ public class RegEx {
 	        	ArrayList<Coordinates> a =t.parcours2(ligne);
 	        	if(! a.isEmpty()) {
 	        		c+=1;
-	        		//System.out.println(a);
+	        		System.out.println(a);
 	        		Menu.printMatchAuto(ligne,a);
 	        	}
 	        }
