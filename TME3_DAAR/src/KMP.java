@@ -1,41 +1,41 @@
 import java.util.ArrayList;
 
 public class KMP {
-	 static int [] retenue(String r){
-		 int [] retenue = new int [r.length()];
-		
-		 char[]liste =r.toCharArray();
-		 char debut=liste[0];
-		 int courant =0;
-		 int value=0;
-		 for (char c:liste) {
-			 value=0;
-			 if (c==debut) {
-				 retenue[courant]=-1;
-				 courant +=1;
-			 	continue;
-			 }
-			 
-			 if(courant==1) {
-				 courant ++;
-				 retenue[courant]=0;
-				 continue;
-			 }
-			 int i = 0;
-			 while (i <= courant-i+1) {
-				 if(r.substring(0,i).equals(r.substring(courant-i,courant))) {
-					 value=i;
-				 }
-				 i++;
-				 
-			 }//rajoute normalisation si mm valeur entre courant et retenue courant
-			 retenue[courant]=value;
-			 courant +=1;
-			 }
-			 
+	static int [] retenue(String r){
+		int [] retenue = new int [r.length()];
+
+		char[]liste =r.toCharArray();
+		char debut=liste[0];
+
+		retenue[0] = 0;
+		retenue[1] = 0;
+		int i = 2, j = 0;
+		while(i < liste.length) {
+			System.out.println("j vaut " + j + " i vaut " + i);
+			//increasing size of prefix-suffix
+			if(liste[j] == liste[i-1]) {
+				retenue[i] = j + 1;
+				i++;
+				j++;
+			}
+			else {
+				if (j > 0) {
+					j = retenue[j];
+				}
+				else {
+					retenue[i] = 0;
+					i++;
+				}
+			}
+		}
+
+		for (i = 0; i < retenue.length; i++) {
+			if(liste[i] == debut && retenue[i] == 0)
+				retenue[i] = -1;
+		}
 		return retenue;
-		 
-	 }
+
+	}
 	 
 	 
 	 static ArrayList<Coordinates> match (char[] facteur, int[] retenue, char[] texte, int nline) {
@@ -74,9 +74,11 @@ public class KMP {
 	 
 	 static ArrayList<Coordinates> kmp(ArrayList<String> lines, String w){
 		 int[] t = retenue(w);
+		 
 		 for (int e : t)
-			 System.out.println(e);
-
+			 System.out.print(e + " ");
+		 System.out.println();
+		 
 	     char[] facteur = new String(w).toCharArray();
 	     ArrayList<Coordinates> res = new ArrayList<>();
 	     int i = 0;
@@ -89,5 +91,14 @@ public class KMP {
 	     
 	     return res;
 	      
+	 }
+	 
+	 
+	 
+	 public static void main(String [] args) {
+		 ArrayList<String> l = new ArrayList<String>();
+		 l.add("maimamaimai");
+		 ArrayList<Coordinates> c = kmp(l,"maimamaimaik");
+		 System.out.println(c);
 	 }
 }

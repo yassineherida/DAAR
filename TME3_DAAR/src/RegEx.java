@@ -19,6 +19,7 @@ public class RegEx {
   static final int PARENTHESEOUVRANT = 0x16641664;
   static final int PARENTHESEFERMANT = 0x51515151;
   static final int DOT = 0xD07;
+  static final int SLASH =  0x6464674; 
   
   //REGEX
   private static String regEx;
@@ -52,16 +53,17 @@ public class RegEx {
         Automate t=new Automate(ret);
         t.test(ret);
         t.determ(t.start);
-        InputStream flux=new FileInputStream("src/test1.txt"); 
+        InputStream flux=new FileInputStream("src/test3.txt"); 
         InputStreamReader lecture=new InputStreamReader(flux);
         BufferedReader buff=new BufferedReader(lecture);
         String ligne;
         int c=0;
         while ((ligne=buff.readLine())!=null){
-        	ArrayList<String> a =t.parcours(ligne);
-        	if(! a.isEmpty())
+        	ArrayList<Coordinates> a =t.parcours2(ligne);
+        	if(! a.isEmpty()) {
         		c+=1;
         		System.out.println(a);
+        	}
         }
        System.out.println("c"+c);
       } catch (Exception e) {
@@ -73,7 +75,47 @@ public class RegEx {
     System.out.println("  >> Parsing completed.");
     System.out.println("Goodbye Mr. Anderson.");
   }
-
+  public static void RegEx(String arg,String name) throws IOException {
+	  
+	   regEx=arg;
+	    System.out.println("  >> Parsing regEx \""+regEx+"\".");
+	    System.out.println("  >> ...");
+	    
+	    if (regEx.length()<1) {
+	      System.err.println("  >> ERROR: empty regEx.");
+	    } else {
+	      System.out.print("  >> ASCII codes: ["+(int)regEx.charAt(0));
+	      for (int i=1;i<regEx.length();i++) System.out.print(","+(int)regEx.charAt(i));
+	      System.out.println("].");
+	      try {
+	        RegExTree ret = parse();
+	        System.out.println("  >> Tree result: "+ret.toString()+".");
+	        Automate t=new Automate(ret);
+	        //t.test(ret);
+	        t.determ(t.start);
+	        InputStream flux=new FileInputStream(name); 
+	        InputStreamReader lecture=new InputStreamReader(flux);
+	        BufferedReader buff=new BufferedReader(lecture);
+	        String ligne;
+	        int c=0;
+	        while ((ligne=buff.readLine())!=null){
+	        	ArrayList<Coordinates> a =t.parcours2(ligne);
+	        	if(! a.isEmpty()) {
+	        		c+=1;
+	        		//System.out.println(a);
+	        		Menu.printMatchAuto(ligne,a);
+	        	}
+	        }
+	       System.out.println("c"+c);
+	      } catch (Exception e) {
+	        System.err.println("  >> ERROR: syntax error for regEx \""+regEx+"\".");
+	      }
+	    }
+	    
+	    System.out.println("  >> ...");
+	    System.out.println("  >> Parsing completed.");
+	    System.out.println("Goodbye Mr. Anderson.");
+	  }
   
   //FROM REGEX TO SYNTAX TREE
   private static RegExTree parse() throws Exception {
@@ -84,12 +126,25 @@ public class RegEx {
     //END DEBUG
 
     ArrayList<RegExTree> result = new ArrayList<RegExTree>();
-    for (int i=0;i<regEx.length();i++) result.add(new RegExTree(charToRoot(regEx.charAt(i)),new ArrayList<RegExTree>()));
+    for (int i=0;i<regEx.length();i++) {
+    	System.out.println("i est "+i);
+    	if (regEx.charAt(i)=='\\') {
+    		System.out.println("cela fonctionne");
+    		result.add(new RegExTree(regEx.charAt(i+1),new ArrayList<RegExTree>()));
+    		i=i+1;
+    	}else {
+    		result.add(new RegExTree(charToRoot(regEx.charAt(i)),new ArrayList<RegExTree>()));
+    	}
+    			
+    	
+    }
     
     return parse(result);
   }
   private static int charToRoot(char c) {
-    if (c=='.') return DOT;
+    if (c=='.')
+    	{System.out.println("ça marche");
+    	return DOT;}
     if (c=='*') return ETOILE;
     if (c=='|') return ALTERN;
     if (c=='(') return PARENTHESEOUVRANT;

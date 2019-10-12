@@ -25,6 +25,7 @@ public class Indexing {
 	        int c=0;
 	        int i = 1, j = 1;
 	        while ((ligne=buff.readLine())!=null){
+	        	if(ligne.length() == 0) continue;
 	        	j=1;
 	        	String[] words = ligne.split("\\s*[^a-zA-Z'-]+\\s*");
 	        	int cpt = 0;
@@ -48,7 +49,6 @@ public class Indexing {
 	        	}
 	        	i++;
 	        }
-	        System.out.println(index.get("sargon's").size());
 	        HashMap<String, ArrayList<Coordinates>> sorted = index.entrySet().stream()
 	        	    .sorted(comparingInt(e -> e.getValue().size()))
 	        	    .collect(toMap(

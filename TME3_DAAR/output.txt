@@ -1,0 +1,15 @@
+Here is the standard output of the command:
+44024 /users/nfs/Etu8/3535008/DAAR/TME3_DAAR/src/textes/the_thirty_nine_step.txt
+Time elapsed : 5
+Here is the standard output of the command:
+101730 /users/nfs/Etu8/3535008/DAAR/TME3_DAAR/src/textes/pg559.txt
+Time elapsed : 9
+Here is the standard output of the command:
+124304 /users/nfs/Etu8/3535008/DAAR/TME3_DAAR/src/textes/babylone2.txt
+Time elapsed : 9
+Here is the standard output of the command:
+44624 /users/nfs/Etu8/3535008/DAAR/TME3_DAAR/src/textes/pg10775.txt
+Time elapsed : 2
+Here is the standard output of the command:
+145893 /users/nfs/Etu8/3535008/DAAR/TME3_DAAR/src/textes/babylone1.txt
+Time elapsed : 8

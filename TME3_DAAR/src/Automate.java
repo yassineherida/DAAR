@@ -29,8 +29,8 @@ import javax.swing.plaf.synth.SynthSplitPaneUI;
 
 public class Automate {
 
-		int[][] automate = new int [257][257];
-		int [][]startEndEps = new int [257][3];
+		int[][] automate = new int [259][259];
+		int [][]startEndEps = new int [259][3];
 		ArrayList<Integer> value =new ArrayList<>();
 		ArrayList<ArrayList<Integer>> epsilon =new ArrayList<>();
 		HashMap<Integer, HashMap<Integer,Set<Integer> >> deter=new HashMap();
@@ -53,16 +53,16 @@ public class Automate {
 		  static final int DOT = 0xD07;
 		  private static String regEx;
 	public Automate(RegExTree a) {
-		for (int i=0;i<257;i++) {
+		for (int i=0;i<259;i++) {
 			value.add(i);
 		}
-		for (int i = 0; i < 257; i++) {
-		    for (int j = 0; j < 257; j++) {
+		for (int i = 0; i < 259; i++) {
+		    for (int j = 0; j < 259; j++) {
 		    	
 		        automate[i][j] = -1;
 		    }
 		}
-		for (int i = 0; i < 257; i++) {
+		for (int i = 0; i < 258; i++) {
 		    for (int j = 0; j < 3; j++) {
 		        startEndEps[i][j] = -1;
 		    }
@@ -73,7 +73,7 @@ public class Automate {
 		
 	}
 	public void createValue(RegExTree abr) {
-		if (abr.root<258  ) {
+		if (abr.root<255 ) {
 			value.remove(abr.root);
 		}
 		else
@@ -83,13 +83,36 @@ public class Automate {
 			}
 	}
 	public int[] exprToAuto(RegExTree abr) {
-		System.out.println(rootToString(abr.root));
-		if (abr.subTrees.isEmpty()) {
+
+	
+		if (abr.root ==DOT) {
+			System.out.println("ta mere");
 			int a =value.get(0);
 			value.remove(0);
 			int b =value.get(0);
 			value.remove(0);
-			automate[a][abr.root]=b;
+			automate[a][257]=b;
+			startEndEps[a][0]=1;
+			startEndEps[a][1]=0;
+			epsilon.add(a,new ArrayList<>());
+			epsilon.add(b,new ArrayList<>());
+			startEndEps[b][0]=0;
+			startEndEps[b][1]=1;
+			start=a;
+			end=b;
+			nbt+=1;	
+			int[] r= {a,b};
+			return r;
+		}
+		
+		
+		if (abr.subTrees.size()==0) {
+			
+			int a =value.get(0);
+			value.remove(0);
+			int b =value.get(0);
+			value.remove(0);
+			automate[a][(int)(char)abr.root]=b;
 			startEndEps[a][0]=1;
 			startEndEps[a][1]=0;
 			epsilon.add(a,new ArrayList<>());
@@ -103,8 +126,8 @@ public class Automate {
 			return r;
 		}
 		else {
-		switch(rootToString(abr.root)) {
-		case "|":{
+		switch(abr.root) {
+		case ALTERN:{
 			int[] a =exprToAuto(abr.subTrees.get(0));
 			int[] b =exprToAuto(abr.subTrees.get(1));
 			//System.out.println("a"+a[0]+" "+a[1]);
@@ -136,7 +159,7 @@ public class Automate {
 			int[] r= {c,d};
 			return r;
 		}
-		case "." :{
+		case CONCAT :{
 			int[] a =exprToAuto(abr.subTrees.get(0));
 			int[] b =exprToAuto(abr.subTrees.get(1));
 			startEndEps[a[1]][1]=0;
@@ -147,7 +170,7 @@ public class Automate {
 			int[] r= {a[0],b[1]};
 			return r;
 		}
-		case "*":{
+		case ETOILE:{
 			int[] a =exprToAuto(abr.subTrees.get(0));
 			int c =value.get(0);
 			value.remove(0);
@@ -172,6 +195,7 @@ public class Automate {
 			
 			
 		}
+		
 		}
 	}
 		return null;
@@ -186,15 +210,15 @@ public class Automate {
 	  }
 	public int  test(RegExTree a) {
 		Automate test = new Automate(a);
-		for (int i =0;i<257;i++) {
-			for (int j =0;j<257;j++) {
+		for (int i =0;i<259;i++) {
+			for (int j =0;j<259;j++) {
 				if(automate[i][j]!= -1){
 					System.out.println("automate["+i+"]["+j+"]="+automate[i][j] );
 					
 				}
 			}
 		}
-		for (int i =0;i<257;i++) {
+		for (int i =0;i<259;i++) {
 			for (int j =0;j<3;j++) {
 				if(startEndEps[i][j]!= -1){
 					System.out.println("startEnd["+i+"]["+j+"]="+startEndEps[i][j] );
@@ -258,18 +282,18 @@ public class Automate {
 		ArrayList<Integer>nb=new ArrayList<Integer>();
 		for (int i:d) {
 			
-			for (int j =0;j<257;j++) {
+			for (int j =0;j<259;j++) {
 				if(i==0) {
 					if (j==97)
-						System.out.println("laaa");
+						System.out.println();
 				}
 				if (automate[i][j]!=-1) {
 					if(deter.get(courant).get(j)==null) {
 						deter.get(courant).put(j, (Set<Integer>) new HashSet<Integer>());
 					} 
-					System.out.println("ici");
+					//System.out.println("ici");
 					 deter.get(courant).get(j).add(automate[i][j]);
-					 System.out.println(  deter.get(courant).get(j)  );
+					 //System.out.println(  deter.get(courant).get(j)  );
 					 deter.get(courant).get(j).addAll( addEpsilon(deter.get(courant).get(j),0) );
 					 if ( !(etat.containsValue(deter.get(courant).get(j)))) {
 						 etat.put(nbetat, deter.get(courant).get(j));
@@ -344,6 +368,73 @@ public class Automate {
 		 }
 		 return res;
 	 }
+	 ArrayList<Coordinates> parcours2(String r) {
 
-	 
+		 //System.out.println("Start");
+		 ArrayList<String> res=new ArrayList<>();
+		 ArrayList<Coordinates> res2 = new ArrayList<>();
+		 char[]liste =r.toCharArray();
+		 String courant="";
+		 int etat_courant=deterstart;
+		 int e=0;
+		
+		 for (int i:liste) {
+			 if(deter.get(etat_courant).containsKey(i)|| deter.get(etat_courant).containsKey(257)) {
+				 //System.out.println(i);
+				 //System.out.println(liste[e]);
+				 //System.out.println("yes");
+				 if(deter.get(etat_courant).containsKey(257)) {
+					 etat_courant= numEtat(deter.get(etat_courant).get(257));
+				 //System.out.println("dot");
+					 }
+				 else
+					 etat_courant= numEtat(deter.get(etat_courant).get(i));
+					//System.out.println(etat_courant);
+					courant=courant+(char)i;
+					//System.out.println("courant est "+courant);
+
+					if(etatF.get(etat_courant)[1]==1) {
+						res2.add(new Coordinates(e,e));
+						res.add(courant);
+					}
+				 for(int j=e+1;j<liste.length;j++) {
+					 /*System.out.println("in");
+					 System.out.println(liste[j]);
+					 System.out.println( deter.get(etat_courant));
+					 System.out.println("out");*/
+					 if( deter.get(etat_courant).get((int)liste[j])==null && !deter.get(etat_courant).containsKey(257)) {
+					// System.out.println(liste[j]);
+						 courant="";
+						 etat_courant=deterstart;
+						 break;
+					
+					 }else {
+						 //System.out.println("no");
+						 if(deter.get(etat_courant).containsKey(257))
+							 etat_courant= numEtat(deter.get(etat_courant).get(257));
+						 else
+							 etat_courant= numEtat(deter.get(etat_courant).get((int)liste[j]));
+						//System.out.println(etat_courant);
+						courant=courant+liste[j];
+						if(etatF.get(etat_courant)[1]==1) {
+							res2.add(new Coordinates(e,j));
+							res.add(courant);
+						}
+							
+					 }
+						
+				 }
+				 courant="";
+				 etat_courant=deterstart;
+			 }
+			
+
+			 e++;
+		 }
+
+		 //System.out.println(res);
+		 return res2;
+
+	 }
 }
+	 
