@@ -59,7 +59,7 @@ public class RegEx {
         String ligne;
         int c=0;
         while ((ligne=buff.readLine())!=null){
-        	ArrayList<String> a =t.parcours2(ligne);
+        	ArrayList<Coordinates> a =t.parcours2(ligne);
         	if(! a.isEmpty()) {
         		c+=1;
         		System.out.println(a);
@@ -75,7 +75,47 @@ public class RegEx {
     System.out.println("  >> Parsing completed.");
     System.out.println("Goodbye Mr. Anderson.");
   }
-
+  public static void RegEx(String arg,String name) throws IOException {
+	  
+	   regEx=arg;
+	    System.out.println("  >> Parsing regEx \""+regEx+"\".");
+	    System.out.println("  >> ...");
+	    
+	    if (regEx.length()<1) {
+	      System.err.println("  >> ERROR: empty regEx.");
+	    } else {
+	      System.out.print("  >> ASCII codes: ["+(int)regEx.charAt(0));
+	      for (int i=1;i<regEx.length();i++) System.out.print(","+(int)regEx.charAt(i));
+	      System.out.println("].");
+	      try {
+	        RegExTree ret = parse();
+	        System.out.println("  >> Tree result: "+ret.toString()+".");
+	        Automate t=new Automate(ret);
+	        //t.test(ret);
+	        t.determ(t.start);
+	        InputStream flux=new FileInputStream(name); 
+	        InputStreamReader lecture=new InputStreamReader(flux);
+	        BufferedReader buff=new BufferedReader(lecture);
+	        String ligne;
+	        int c=0;
+	        while ((ligne=buff.readLine())!=null){
+	        	ArrayList<Coordinates> a =t.parcours2(ligne);
+	        	if(! a.isEmpty()) {
+	        		c+=1;
+	        		//System.out.println(a);
+	        		Menu.printMatchAuto(ligne,a);
+	        	}
+	        }
+	       System.out.println("c"+c);
+	      } catch (Exception e) {
+	        System.err.println("  >> ERROR: syntax error for regEx \""+regEx+"\".");
+	      }
+	    }
+	    
+	    System.out.println("  >> ...");
+	    System.out.println("  >> Parsing completed.");
+	    System.out.println("Goodbye Mr. Anderson.");
+	  }
   
   //FROM REGEX TO SYNTAX TREE
   private static RegExTree parse() throws Exception {

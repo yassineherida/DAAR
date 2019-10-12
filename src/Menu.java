@@ -54,7 +54,15 @@ public class Menu {
 	}
 	
 	public boolean isRegex(String w) {
-		return false;
+		boolean cond =false;
+		for (int j =0;j<w.length();j++) {
+			if(w.charAt(j)=='.'||w.charAt(j)=='|'||w.charAt(j)=='*'||w.charAt(j)=='\\') {
+				cond=true;
+				break;
+				
+			}
+		}
+		return cond;
 	}
 	
 
@@ -68,6 +76,17 @@ public class Menu {
 			int j = c.getY()-1;
 			String ligne = txt.get(i);
 			System.out.println(ligne.substring(0,j)+ yellow + ligne.substring(j, j+w.length()) + reset + ligne.substring(j+w.length()));
+		}
+
+	}
+	public static void printMatchAuto(String txt, ArrayList<Coordinates> match) {
+		String reset = new String("\u001B[0m");
+		String yellow = new String("\u001B[31m");
+		
+		for(Coordinates c: match) {
+			int i = c.getX();
+			int j = c.getY();
+			System.out.println(txt.substring(0,i)+ yellow + txt.substring(i, j+1) + reset + txt.substring(j+1));
 		}
 
 	}
@@ -139,14 +158,16 @@ public class Menu {
 	        else {
 	        	//check if is a regex or not
 	        	if(isRegex(pattern)) {
-	        		//TODO
-	        		continue;
+	        		System.out.println("le nom est "+filename);
+	        		RegEx.RegEx(pattern,name+"/"+filename);
+	        		
 	        	}
 	        	else {
 	        		locs = KMP.kmp(lignes, pattern);
+	        		printMatch(pattern, lignes, locs);
 	        	}
 	        }
-	        printMatch(pattern, lignes, locs);
+	        
 	    }
     }
 }

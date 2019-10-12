@@ -9,19 +9,27 @@ public class KMP {
 
 		retenue[0] = 0;
 		retenue[1] = 0;
-		for (int courant = 2; courant < liste.length; courant++ ) {
-
+		int i = 2, j = 0;
+		while(i < liste.length) {
+			System.out.println("j vaut " + j + " i vaut " + i);
 			//increasing size of prefix-suffix
-			if(liste[retenue[courant-1]] == liste[courant-1]) {
-				retenue[courant] = retenue[courant-1] + 1;
+			if(liste[j] == liste[i-1]) {
+				retenue[i] = j + 1;
+				i++;
+				j++;
 			}
-			//prefix-suffix over'ed
 			else {
-				retenue[courant] = 0;
+				if (j > 0) {
+					j = retenue[j];
+				}
+				else {
+					retenue[i] = 0;
+					i++;
+				}
 			}
 		}
 
-		for (int i = 0; i < retenue.length; i++) {
+		for (i = 0; i < retenue.length; i++) {
 			if(liste[i] == debut && retenue[i] == 0)
 				retenue[i] = -1;
 		}
@@ -89,8 +97,8 @@ public class KMP {
 	 
 	 public static void main(String [] args) {
 		 ArrayList<String> l = new ArrayList<String>();
-		 l.add("lalalalalala");
-		 ArrayList<Coordinates> c = kmp(l,"lalalalalala");
+		 l.add("maimamaimai");
+		 ArrayList<Coordinates> c = kmp(l,"maimamaimaik");
 		 System.out.println(c);
 	 }
 }

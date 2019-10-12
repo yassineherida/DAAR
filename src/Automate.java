@@ -83,19 +83,7 @@ public class Automate {
 			}
 	}
 	public int[] exprToAuto(RegExTree abr) {
-		System.out.println("valeur pere "+abr.root);
-		System.out.println(abr.subTrees.size());
-		if (abr.subTrees.size()==0) {
-			System.out.println("was here");
-		}
-		for (RegExTree e: abr.subTrees) {
-			System.out.println(" valeur fils "+e.root);
-		}
-		System.out.println();
-		System.out.println(abr.root);
-		System.out.println("hey");
-		System.out.println("value est "+abr.root+" en int "+(int)abr.root);
-		System.out.println((int)'.');
+
 	
 		if (abr.root ==DOT) {
 			System.out.println("ta mere");
@@ -117,8 +105,9 @@ public class Automate {
 			return r;
 		}
 		
+		
 		if (abr.subTrees.size()==0) {
-			System.out.println("was here");
+			
 			int a =value.get(0);
 			value.remove(0);
 			int b =value.get(0);
@@ -379,13 +368,16 @@ public class Automate {
 		 }
 		 return res;
 	 }
-	 ArrayList<String> parcours2(String r) {
+	 ArrayList<Coordinates> parcours2(String r) {
+
 		 //System.out.println("Start");
 		 ArrayList<String> res=new ArrayList<>();
+		 ArrayList<Coordinates> res2 = new ArrayList<>();
 		 char[]liste =r.toCharArray();
 		 String courant="";
 		 int etat_courant=deterstart;
 		 int e=0;
+		
 		 for (int i:liste) {
 			 if(deter.get(etat_courant).containsKey(i)|| deter.get(etat_courant).containsKey(257)) {
 				 //System.out.println(i);
@@ -400,8 +392,11 @@ public class Automate {
 					//System.out.println(etat_courant);
 					courant=courant+(char)i;
 					//System.out.println("courant est "+courant);
-					if(etatF.get(etat_courant)[1]==1)
+
+					if(etatF.get(etat_courant)[1]==1) {
+						res2.add(new Coordinates(e,e));
 						res.add(courant);
+					}
 				 for(int j=e+1;j<liste.length;j++) {
 					 /*System.out.println("in");
 					 System.out.println(liste[j]);
@@ -421,8 +416,10 @@ public class Automate {
 							 etat_courant= numEtat(deter.get(etat_courant).get((int)liste[j]));
 						//System.out.println(etat_courant);
 						courant=courant+liste[j];
-						if(etatF.get(etat_courant)[1]==1)
+						if(etatF.get(etat_courant)[1]==1) {
+							res2.add(new Coordinates(e,j));
 							res.add(courant);
+						}
 							
 					 }
 						
@@ -434,7 +431,10 @@ public class Automate {
 
 			 e++;
 		 }
-		 return res;
+
+		 //System.out.println(res);
+		 return res2;
+
 	 }
 }
 	 
