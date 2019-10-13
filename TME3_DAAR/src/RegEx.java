@@ -129,7 +129,7 @@ public class RegEx {
     for (int i=0;i<regEx.length();i++) {
     	System.out.println("i est "+i);
     	if (regEx.charAt(i)=='\\') {
-    		System.out.println("cela fonctionne");
+    		//si on tombe sur un backslash on passe au caractere d'apres sans changer le caractere en sa constante
     		result.add(new RegExTree(regEx.charAt(i+1),new ArrayList<RegExTree>()));
     		i=i+1;
     	}else {
@@ -143,7 +143,7 @@ public class RegEx {
   }
   private static int charToRoot(char c) {
     if (c=='.')
-    	{System.out.println("ça marche");
+    	{
     	return DOT;}
     if (c=='*') return ETOILE;
     if (c=='|') return ALTERN;
