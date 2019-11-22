@@ -106,12 +106,33 @@ public class Main{
 		}
 	}
 	
+	
+	
 	public static void main(String[] args) throws IOException {
 		Main m = new Main();
 		m.menu();
 		double [][] distJac = m.matDistJaccard();
+		double edgeThreshold = 0.65;
 		m.printMatJac(distJac);
-
+		Graph g = Graph.gFromMat(edgeThreshold, distJac);
+		g.writeGraph("../graph.txt");
+		
+		Betweeness b = new Betweeness();
+		PageRank pg = new PageRank();
+		double[] betweeness = b.betweenessGraph(g, edgeThreshold);
+		double[] page_rank = pg.page_rank(g, 0.15, 10, g.size()); 
+		
+		System.out.println("---------------PAGE RANK----------------");
+		for(int i = 0; i < g.size(); i++) {
+			System.out.println(m.fileNumber.get(i) + " " +page_rank[i]);
+		}
+		System.out.println("----------------------------------------\n");
+		
+		System.out.println("---------------BETWEENESS----------------");
+		for(int i = 0; i < g.size(); i++) {
+			System.out.println(m.fileNumber.get(i) + " " +betweeness[i]);
+		}
+		System.out.println("----------------------------------------\n");
 	}
 }
 

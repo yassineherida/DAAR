@@ -14,7 +14,7 @@ public class PageRank {
 		}
 	}
 
-	public double [] page_rank(Graph G, float alpha, int t, int n) {
+	public double [] page_rank(Graph G, double alpha, int t, int n) {
 		double[] I = new double[n];
 		double[] P = new double[n];
 		double[] P_tmp = new double[n];

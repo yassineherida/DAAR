@@ -1,9 +1,10 @@
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 
-public class FloydWarshall {
+public class Betweeness {
 
 
 
@@ -47,7 +48,10 @@ public class FloydWarshall {
 		return result;
 	}
 
-	public ArrayList<Object> floydWarshallv2(ArrayList<Set<Integer>> edge, int edgeThreshold) {
+	//kind of hackish to return the two lists ;; returns List of Object and then we upcast them 
+	// R is matrix of precedency
+	// M is matrix of distance
+	public ArrayList<Object> floydWarshallv2(ArrayList<Set<Integer>> edge, double edgeThreshold) {
 
 		int n = edge.size();
 		double[][] M = new double[n][n];
@@ -182,10 +186,31 @@ public class FloydWarshall {
 		}
 		return nb_ppc;
 	}
+	
+	public double[] betweenessGraph(Graph g, double edgeThreshold) {
+		int n = g.adjList.size();
+		
+		ArrayList<Set<Integer>> l = new ArrayList<>();
+		for(Entry<Integer, Set<Integer>> e: g.adjList.entrySet()) {
+			l.add(e.getValue());
+		}
+		
+		ArrayList<Object> resFloydWarshall = floydWarshallv2(l, edgeThreshold);
+		double [][] M = (double[][]) resFloydWarshall.get(0);
+		ArrayList<ArrayList<HashSet<Integer>>> R = (ArrayList<ArrayList<HashSet<Integer>>>) resFloydWarshall.get(1);
+		int[][] nb_ppc = nb_ppc(R, n);
+		
+
+		double[] res = new double[n];
+		for(int i = 0; i < n; i++) {
+			res[i] = betweeness(i, nb_ppc, R);
+		}
+		return res;
+	}
 
 
 	public static void main (String[] args) {
-		FloydWarshall f = new FloydWarshall();
+		Betweeness f = new Betweeness();
 
 		int[][] dist = {{0, 1, 10, 1}, {1, 0, 10, 10}, {10, 10, 0, 1}, {1, 10, 1, 0}};
 		ArrayList<Object> l  = f.floydWarshall(dist, 2);
