@@ -1,6 +1,7 @@
 #!/bin/bash
 
-find . -name '*.zip' -exec mv {} ~/DAAR/TME4_DAAR/bibli \;
-cd ~/DAAR/TME4_DAAR/bibli && unzip "*.zip"
-cd ~/DAAR/TME4_DAAR/bibli && rm *.zip
+#wget -w 2 -m -H "http://www.gutenberg.org/robot/harvest?filetypes[]=txt&langs[]=en"
+find . -name '*.zip' -exec mv {} $1 \;
+cd $1 && unzip "*.zip"
+cd $1 && rm *.zip
 

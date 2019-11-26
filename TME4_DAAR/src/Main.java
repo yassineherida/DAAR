@@ -1,13 +1,16 @@
 import java.awt.image.PackedColorModel;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,11 +23,29 @@ public class Main{
 	private Map<Integer, String> fileNumber = new HashMap<>();
 	static int cpt = 0;
 	final DecimalFormat df = new DecimalFormat("#0.000");
-
+	
+	//should be a parameter of exec
+	final String commonestWordFilename = "../200_commonest_word.txt";
+	static Set<String> commonestWords = new HashSet<>();
+	
 	public Map<String, Integer> buildIndexing(Path p) throws IOException {
 		return Indexing.indexing(p.toString());
 	}
 
+	public void parseCommonestWords(String filename) throws IOException {
+		InputStream flux=new FileInputStream(filename); 
+		InputStreamReader lecture=new InputStreamReader(flux);
+		BufferedReader buff=new BufferedReader(lecture);
+		try {
+			String ligne;
+			while ((ligne=buff.readLine())!=null){
+				commonestWords.add(ligne);
+			}
+		}finally {
+			buff.close();
+		}
+	}
+	
 	public boolean buildDataBase(File dir) throws IOException {
 		File[] directoryListing = dir.listFiles();
 		if (directoryListing != null) {
@@ -44,6 +65,7 @@ public class Main{
 	}
 
 	public void menu() throws IOException {
+		parseCommonestWords(commonestWordFilename);
 		System.out.println("Enter the repository containing the data");
 		BufferedReader reader =  
 				new BufferedReader(new InputStreamReader(System.in)); 

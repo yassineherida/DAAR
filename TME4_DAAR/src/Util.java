@@ -44,7 +44,7 @@ public class Util {
 		Arrays.sort(matDevelopped);
 		Graph res = null;
 		
-		int indexEdgeThreshold = Math.floorDiv(3*matDevelopped.length, 4);
+		int indexEdgeThreshold = Math.floorDiv(1*matDevelopped.length, 4);
 		double edgeThreshold = matDevelopped[indexEdgeThreshold];
 		System.out.println("picked threshold for threshold75 is " + edgeThreshold);
 		res = Graph.gFromMat(edgeThreshold, mat);

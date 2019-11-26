@@ -49,7 +49,11 @@ public class Indexing {
 				}
 				i++;
 			}
-
+			
+			for(String s:Main.commonestWords) {
+				index.remove(s);
+			}
+			
 			return index;
 		}finally {
 			buff.close();

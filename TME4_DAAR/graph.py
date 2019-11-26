@@ -13,7 +13,7 @@ for line in f:
     i += 1
 
 
-pos = nx.spring_layout(G,k=0.15,iterations=20)
+pos = nx.spring_layout(G,k=0.5,iterations=20)
 
 nx.draw(G,pos, with_labels=True)
 plt.savefig("simple_path.png") # save as png

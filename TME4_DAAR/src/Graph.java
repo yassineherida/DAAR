@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -123,7 +124,7 @@ public class Graph {
 			marked[i] = false;
 		}
 		Stack<Integer> p = new Stack<>();
-		Set<Integer> compo = new HashSet<>();
+		List<Integer> compo = new ArrayList<>();
 		//strong hypothesis here ... vertice indexes go from 0 to n-1
 		p.add(0);
 		
@@ -140,6 +141,7 @@ public class Graph {
 				}
 			}
 			
+			Collections.sort(compo);
 			//create component
 			Graph gCompo = new Graph(compo.size());
 			gCompo.edgeThreshold = edgeThreshold;
@@ -149,6 +151,8 @@ public class Graph {
 				gCompo.futureIndex.put(s, i);
 				for(Integer v: voisins(s)) {
 					if(v < s) {
+						System.out.println(v + " " + s);
+						System.out.println(gCompo.futureIndex);
 						gCompo.addEdge(i, gCompo.futureIndex.get(v));
 					}
 				}
