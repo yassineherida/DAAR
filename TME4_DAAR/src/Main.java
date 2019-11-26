@@ -1,3 +1,4 @@
+import java.awt.image.PackedColorModel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -104,33 +105,62 @@ public class Main{
 			}
 			System.out.println();
 		}
+		
+
 	}
 	
-	
+	public void print_table() {
+		for(Entry<Integer,String> s:fileNumber.entrySet()) {
+			System.out.println(s.getKey() + " " + s.getValue());
+		}
+	}
+
 	
 	public static void main(String[] args) throws IOException {
 		Main m = new Main();
 		m.menu();
+		m.print_table();
 		double [][] distJac = m.matDistJaccard();
-		double edgeThreshold = 0.65;
 		m.printMatJac(distJac);
-		Graph g = Graph.gFromMat(edgeThreshold, distJac);
+		Graph g =Util.chooseThreshold(distJac);
 		g.writeGraph("../graph.txt");
+		
+		
+		
 		
 		Betweeness b = new Betweeness();
 		PageRank pg = new PageRank();
-		double[] betweeness = b.betweenessGraph(g, edgeThreshold);
-		double[] page_rank = pg.page_rank(g, 0.15, 10, g.size()); 
+		
+		//WITH CONNEX GRAPH
+		double[] betweeness = b.betweenessGraph(g, g.edgeThreshold());
+		double[] page_rank = pg.page_rank(g, 0.1, 10, g.size()); 
+		
+		//WITH FIXED EDGETHRESHOLD AND MULTIPLE COMPONENTS GRAPH
+		List<Graph> compoG = Util.threshold75(distJac);
+		double[] betweeness2 = new double[g.size()];
+		double[] page_rank2 = new double[g.size()];
+		for(Graph g1: compoG) {
+			double[] betweenessG = b.betweenessGraph(g1, g1.edgeThreshold());
+			double[] page_rankG = pg.page_rank(g1, 0.1, 1, g1.size()); 
+			
+			for(int i = 0; i < betweenessG.length; i++) {
+				betweeness2[g1.prvIndex.get(i)] = betweenessG[i];
+				page_rank2[g1.prvIndex.get(i)] = page_rankG[i];
+			}
+			
+		}
 		
 		System.out.println("---------------PAGE RANK----------------");
 		for(int i = 0; i < g.size(); i++) {
-			System.out.println(m.fileNumber.get(i) + " " +page_rank[i]);
+			//System.out.println(m.fileNumber.get(i) + " " +page_rank[i]);
+			System.out.println(i + " " + m.fileNumber.get(i) + " " +page_rank2[i]);
 		}
 		System.out.println("----------------------------------------\n");
 		
 		System.out.println("---------------BETWEENESS----------------");
 		for(int i = 0; i < g.size(); i++) {
-			System.out.println(m.fileNumber.get(i) + " " +betweeness[i]);
+			//System.out.println(m.fileNumber.get(i) + " " +betweeness[i]);
+			System.out.println(i + " " + m.fileNumber.get(i) + " " +betweeness2[i]);
 		}
 		System.out.println("----------------------------------------\n");
 	}

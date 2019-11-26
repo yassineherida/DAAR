@@ -53,12 +53,33 @@ public class PageRank {
 		return P;
 	}
 	
-	public static void test(int[] t) {
-		t[0] = 1;
+	public  void test() {
+		Graph g = new Graph(8);
+		g.addEdgeDirected(0, 1);
+		g.addEdgeDirected(0, 3);
+		g.addEdgeDirected(0, 2);
+		g.addEdgeDirected(1, 2);
+		g.addEdgeDirected(3, 2);
+		g.addEdgeDirected(1, 4);
+		g.addEdgeDirected(4, 0);
+		g.addEdgeDirected(3, 5);
+		g.addEdgeDirected(5, 0);
+		g.addEdgeDirected(2, 6);
+		g.addEdgeDirected(6, 0);
+		g.addEdgeDirected(2, 7);
+		g.addEdgeDirected(7, 0);
+		
+		double[] scores = page_rank(g, 0.15, 10, g.size());
+		
+		for(int i = 0; i < scores.length; i++) {
+			System.out.println("SCORES");
+			System.out.println(scores[i]);
+		}
 	}
 	
 	public static void main(String[] args) {
-		int[]  t = {0};
+		PageRank p = new PageRank();
+		p.test();
 		
 	}
 }

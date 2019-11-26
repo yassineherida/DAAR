@@ -200,6 +200,12 @@ public class Betweeness {
 		ArrayList<ArrayList<HashSet<Integer>>> R = (ArrayList<ArrayList<HashSet<Integer>>>) resFloydWarshall.get(1);
 		int[][] nb_ppc = nb_ppc(R, n);
 		
+		for(ArrayList<HashSet<Integer>> t: R) {
+			for(HashSet<Integer> e: t) {
+				System.out.print(e + " ");
+			}
+			System.out.println();
+		}
 
 		double[] res = new double[n];
 		for(int i = 0; i < n; i++) {
