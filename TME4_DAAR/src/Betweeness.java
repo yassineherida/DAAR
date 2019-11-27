@@ -10,43 +10,7 @@ public class Betweeness {
 
 	
 
-	public ArrayList<Object> floydWarshall(int[][] dists, int edgeThreshold) {
 
-		int n = dists.length;
-		double[][] M = new double[n][n];
-
-		int[][] R = new int[n][n];
-
-		int[][] nb_ppc = new int[n][n];
-
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				double dist = dists[i][j];
-				M[i][j] = dist < edgeThreshold ? dist : Double.POSITIVE_INFINITY;
-				R[i][j] = j;
-				nb_ppc[i][j] = 1;
-				// System.out.println("R[i][j] vaut " + R[i][j]);
-			}
-		}
-
-		for (int p = 0; p < n; p++) {
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < n; j++) {
-					if (M[i][j] > M[i][p] + M[p][j]) {
-						M[i][j] = M[i][p] + M[p][j];
-						R[i][j] = R[i][p];
-					}
-					if (M[i][j] == M[i][p] + M[p][j]) {
-						nb_ppc[i][j]++;
-					}
-				}
-			}
-		}
-		ArrayList<Object> result = new ArrayList<>();
-		result.add(M);
-		result.add(R);
-		return result;
-	}
 
 	//kind of hackish to return the two lists ;; returns List of Object and then we upcast them 
 	// R is matrix of precedency
@@ -245,15 +209,8 @@ public class Betweeness {
 		Betweeness f = new Betweeness();
 
 		int[][] dist = {{0, 1, 10, 1}, {1, 0, 10, 10}, {10, 10, 0, 1}, {1, 10, 1, 0}};
-		ArrayList<Object> l  = f.floydWarshall(dist, 2);
 
-		
-		for(int[] t: (int[][]) l.get(1)) {
-			for(int e: t) {
-				System.out.print(e + " ");
-			}
-			System.out.println();
-		}
+
 		
 		ArrayList<Set<Integer>> g = new ArrayList<>();
 		/*
@@ -304,15 +261,9 @@ public class Betweeness {
 			System.out.println();
 		}
 		System.out.println(l2.get(1));
-		int [][] R = (int[][]) l.get(1);
 		double [][] M = (double[][]) l2.get(0);
 		
-		for(int[] t: R) {
-			for(int e: t) {
-				System.out.print(e + " ");
-			}
-			System.out.println();
-		}
+
 
 		for(double[] t: M) {
 			for(double e: t) {
