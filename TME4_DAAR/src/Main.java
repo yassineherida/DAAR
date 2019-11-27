@@ -1,10 +1,15 @@
 import java.awt.image.PackedColorModel;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.AbstractMap;
@@ -138,7 +143,7 @@ public class Main{
 	}
 
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException  {
 		Main m = new Main();
 		m.menu();
 		m.print_table();
@@ -153,17 +158,26 @@ public class Main{
 		Betweeness b = new Betweeness();
 		PageRank pg = new PageRank();
 		
+		PageRank2 pg2 = new PageRank2();
 		//WITH CONNEX GRAPH
 		double[] betweeness = b.betweenessGraph(g, g.edgeThreshold());
 		double[] page_rank = pg.page_rank(g, 0.1, 10, g.size()); 
 		
+		BigDecimal[] page_rank3 = pg2.page_rank(g, 0.1, 20, g.size());
+		
 		//WITH FIXED EDGETHRESHOLD AND MULTIPLE COMPONENTS GRAPH
 		List<Graph> compoG = Util.threshold75(distJac);
 		double[] betweeness2 = new double[g.size()];
-		double[] page_rank2 = new double[g.size()];
+		//double[] page_rank2 = new double[g.size()];
+		
+		BigDecimal[] page_rank2 = new BigDecimal[g.size()];
+		
 		for(Graph g1: compoG) {
 			double[] betweenessG = b.betweenessGraph(g1, g1.edgeThreshold());
-			double[] page_rankG = pg.page_rank(g1, 0.1, 1, g1.size()); 
+			//double[] page_rankG = pg.page_rank(g1, 0.1, 10, g1.size()); 
+			
+
+			BigDecimal[] page_rankG = pg2.page_rank(g1, 0.1, 10, g1.size()); 
 			
 			for(int i = 0; i < betweenessG.length; i++) {
 				betweeness2[g1.prvIndex.get(i)] = betweenessG[i];
@@ -172,10 +186,24 @@ public class Main{
 			
 		}
 		
+		OutputStream fluxPR=new FileOutputStream("../resPageRank"); 
+		OutputStreamWriter ecriturePR=new OutputStreamWriter(fluxPR);
+		BufferedWriter buffPR=new BufferedWriter(ecriturePR);
+		
+		OutputStream fluxBT=new FileOutputStream("../resBetweeness"); 
+		OutputStreamWriter ecritureBT=new OutputStreamWriter(fluxBT);
+		BufferedWriter buffBT=new BufferedWriter(ecritureBT);
+		
+
+		
 		System.out.println("---------------PAGE RANK----------------");
 		for(int i = 0; i < g.size(); i++) {
-			//System.out.println(m.fileNumber.get(i) + " " +page_rank[i]);
-			System.out.println(i + " " + m.fileNumber.get(i) + " " +page_rank2[i]);
+			System.out.println(m.fileNumber.get(i) + " " +page_rank2[i]);
+			System.out.println(i + " " + m.fileNumber.get(i) + " " +page_rank3[i]);
+			
+			buffPR.write(page_rank2[i].toPlainString());
+			
+			
 		}
 		System.out.println("----------------------------------------\n");
 		
@@ -183,8 +211,12 @@ public class Main{
 		for(int i = 0; i < g.size(); i++) {
 			//System.out.println(m.fileNumber.get(i) + " " +betweeness[i]);
 			System.out.println(i + " " + m.fileNumber.get(i) + " " +betweeness2[i]);
+			
+			buffBT.write( betweeness2[i]+"\n");
 		}
 		System.out.println("----------------------------------------\n");
+		buffPR.close();
+		buffBT.close();
 	}
 }
 

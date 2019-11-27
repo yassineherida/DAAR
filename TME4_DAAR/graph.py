@@ -12,7 +12,10 @@ for line in f:
     labels.append(str(i))
     i += 1
 
+print(len(G))
+pr = nx.pagerank(G,alpha=0.9)
 
+print(pr)
 pos = nx.spring_layout(G,k=0.5,iterations=20)
 
 nx.draw(G,pos, with_labels=True)

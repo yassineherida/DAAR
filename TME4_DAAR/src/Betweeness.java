@@ -94,7 +94,6 @@ public class Betweeness {
 						R.get(i).get(j).add(p);
 					}
 					if (M[i][p] + M[p][j] == M[i][j]) {
-						//System.out.println("i: " + i + " j: " + j + " p: " + p);
 						R.get(i).get(j).add(p);
 					}
 
@@ -130,6 +129,17 @@ public class Betweeness {
 		g.get(j).add(i);
 	}
 	
+	
+	public int nb_ppc_from_point (ArrayList<ArrayList<HashSet<Integer>>> R, int n, int i, int j) {
+		int nb_ppc = 0;
+		for(int k: R.get(i).get(j)) {
+			if(k==j) return 1;
+			nb_ppc += nb_ppc_from_point(R, n, i, k);
+		}
+		return nb_ppc;
+	}
+	
+	/*
 	public int nb_ppc_from_point (ArrayList<ArrayList<HashSet<Integer>>> R, int n, int i, int j) {
 		int nb_ppc = 0;
 		for(int k: R.get(i).get(j)) {
@@ -137,7 +147,8 @@ public class Betweeness {
 			nb_ppc += nb_ppc_from_point(R, n, i, k) * nb_ppc_from_point(R, n, k, j);
 		}
 		return nb_ppc;
-	}
+	}*/
+	
 	
 	/*
 	// returns the number of shortest paths from point i to point j with v in it
@@ -206,11 +217,26 @@ public class Betweeness {
 			}
 			System.out.println();
 		}
+		
+
 
 		double[] res = new double[n];
 		for(int i = 0; i < n; i++) {
 			res[i] = betweeness(i, nb_ppc, R);
 		}
+		
+		double max = 0;
+		for(int i = 0; i < n; i++) {
+			if(res[i] > max) {
+				max = res[i];
+			}
+		}
+		for(int i = 0; i < n; i++) {
+			if(res[i] > 0) {
+				res[i] = res[i]/max;
+			}
+		}
+		
 		return res;
 	}
 
@@ -295,6 +321,7 @@ public class Betweeness {
 			System.out.println();
 		}
 		
+		System.out.println("nb_ppc vaut");
 		int[][] nb_ppc = f.nb_ppc(R2, g.size());
 		for(int[] t: nb_ppc) {
 			for(int e: t) {
