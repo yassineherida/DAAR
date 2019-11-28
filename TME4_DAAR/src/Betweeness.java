@@ -138,7 +138,7 @@ public class Betweeness {
 	
 	// returns the number of shortest paths from point i to point j with v in it
 	public int nb_ppc_using_point (ArrayList<ArrayList<HashSet<Integer>>> R, int[][] t_nb_ppc, int n, int i, int j, int v) {
-		if(v==i || v==j) return 1;
+		//if(v==i || v==j) return 0;
 		int nb_ppc = 0;
 		for(int k: R.get(i).get(j)) {
 			if(k==j) return 0;

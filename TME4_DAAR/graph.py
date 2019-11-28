@@ -19,5 +19,5 @@ print(pr)
 pos = nx.spring_layout(G,k=0.5,iterations=20)
 
 nx.draw(G,pos, with_labels=True)
-plt.savefig("simple_path.png") # save as png
+plt.savefig("simple_path2.png") # save as png
 plt.show() # display
