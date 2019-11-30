@@ -28,7 +28,7 @@ public class PageRank {
 
 		double norm = 0;
 		boolean converging = false;
-
+		i=0;
 		while (!converging  && i < t){
 			converging = true;
 			prodmatvect(G, P_tmp, n, P);

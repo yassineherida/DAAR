@@ -30,7 +30,7 @@ public class Main{
 	final DecimalFormat df = new DecimalFormat("#0.000");
 	
 	//should be a parameter of exec
-	final String commonestWordFilename = "../200_commonest_word.txt";
+	final String commonestWordFilename = "200_commonest_word.txt";
 	static Set<String> commonestWords = new HashSet<>();
 	
 	public Map<String, Integer> buildIndexing(Path p) throws IOException {
@@ -159,6 +159,7 @@ public class Main{
 		PageRank pg = new PageRank();
 		
 		PageRank2 pg2 = new PageRank2();
+		Closeness c = new Closeness();
 		//WITH CONNEX GRAPH
 		double[] betweeness = b.betweenessGraph(g, g.edgeThreshold());
 		double[] page_rank = pg.page_rank(g, 0.1, 10, g.size()); 
@@ -171,17 +172,21 @@ public class Main{
 		//double[] page_rank2 = new double[g.size()];
 		
 		BigDecimal[] page_rank2 = new BigDecimal[g.size()];
-		
+		double[][] matdis = c.floydWarshallv2(g, g.edgeThreshold());
+		double [] closene = c.closeness(matdis,g.size());
+		double [] closene2=new double [g.size()];
 		for(Graph g1: compoG) {
 			double[] betweenessG = b.betweenessGraph(g1, g1.edgeThreshold());
 			//double[] page_rankG = pg.page_rank(g1, 0.1, 10, g1.size()); 
 			
-
-			BigDecimal[] page_rankG = pg2.page_rank(g1, 0.1, 10, g1.size()); 
 			
+			BigDecimal[] page_rankG = pg2.page_rank(g1, 0.1, 10, g1.size());
+			double[][] matdisG = c.floydWarshallv2(g1, g1.edgeThreshold());
+			double [] closeneG = c.closeness(matdisG,g1.size());
 			for(int i = 0; i < betweenessG.length; i++) {
 				betweeness2[g1.prvIndex.get(i)] = betweenessG[i];
 				page_rank2[g1.prvIndex.get(i)] = page_rankG[i];
+				closene2[g1.prvIndex.get(i)]=closeneG[i];
 			}
 			
 		}
@@ -194,7 +199,14 @@ public class Main{
 		OutputStreamWriter ecritureBT=new OutputStreamWriter(fluxBT);
 		BufferedWriter buffBT=new BufferedWriter(ecritureBT);
 		
-
+		OutputStream fluxCL1=new FileOutputStream("../resCloseness1"); 
+		OutputStreamWriter ecritureCL1=new OutputStreamWriter(fluxCL1);
+		BufferedWriter buffCL1=new BufferedWriter(ecritureCL1);
+		
+		OutputStream fluxCL2=new FileOutputStream("../resCloseness2"); 
+		OutputStreamWriter ecritureCL2=new OutputStreamWriter(fluxCL2);
+		BufferedWriter buffCL2=new BufferedWriter(ecritureCL2);
+		
 		
 		System.out.println("---------------PAGE RANK----------------");
 		for(int i = 0; i < g.size(); i++) {
@@ -213,6 +225,20 @@ public class Main{
 			System.out.println(i + " " + m.fileNumber.get(i) + " " +betweeness2[i]);
 			
 			buffBT.write( betweeness2[i]+"\n");
+		}
+		System.out.println("---------------CLOSENESS----------------");
+		for(int i = 0; i < g.size(); i++) {
+			//System.out.println(m.fileNumber.get(i) + " " +betweeness[i]);
+			System.out.println(i + " " + m.fileNumber.get(i) + " " +closene[i]);
+			
+			buffCL1.write( closene[i]+"\n");
+		}
+		System.out.println("---------------CLOSENESS2----------------");
+		for(int i = 0; i < g.size(); i++) {
+			//System.out.println(m.fileNumber.get(i) + " " +betweeness[i]);
+			System.out.println(i + " " + m.fileNumber.get(i) + " " +closene2[i]);
+			
+			buffCL2.write( closene2[i]+"\n");
 		}
 		System.out.println("----------------------------------------\n");
 		buffPR.close();
